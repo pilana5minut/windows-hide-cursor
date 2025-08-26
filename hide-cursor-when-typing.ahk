@@ -59,26 +59,31 @@ CheckKeyboardActivity() {
 SystemCursor(OnOff := "On") {
     static AndMask, XorMask
     static CursorHandles := Map()
+    static EmptyCursors := Map()
     static SystemCursors := Map("APPSTARTING", 32650, "ARROW", 32512, "CROSS", 32515, "HAND", 32649, "HELP", 32651, "IBEAM", 32513, "NO", 32648, "SIZEALL", 32646, "SIZENESW", 32643, "SIZENS", 32645, "SIZENWSE", 32642, "SIZEWE", 32644, "UPARROW", 32516, "WAIT", 32514)
     
     if (OnOff = "Init") {
-        ; Создаем полностью прозрачные маски для курсора
-        AndMask := Buffer(32*4, 0)  ; Полностью прозрачная AND маска
-        XorMask := Buffer(32*4, 0)  ; Полностью прозрачная XOR маска
+        ; Создаем маски для пустого курсора
+        AndMask := Buffer(32*4, 0xFF)  ; Полностью белая AND маска (все биты = 1)
+        XorMask := Buffer(32*4, 0)     ; Полностью черная XOR маска (все биты = 0)
         
+        ; Сохраняем оригинальные курсоры
         for CursorName, CursorID in SystemCursors {
             CursorHandle := DllCall("LoadCursor", "Ptr", 0, "Ptr", CursorID, "Ptr")
             CursorHandles[CursorName] := DllCall("CopyImage", "Ptr", CursorHandle, "UInt", 2, "Int", 0, "Int", 0, "UInt", 0, "Ptr")
+            
+            ; Создаем пустые курсоры заранее
+            EmptyCursors[CursorName] := DllCall("CreateCursor", "Ptr", 0, "Int", 0, "Int", 0, "Int", 32, "Int", 32, "Ptr", AndMask, "Ptr", XorMask, "Ptr")
         }
     } else if (OnOff = "On") {
+        ; Восстанавливаем оригинальные курсоры
         for CursorName, CursorID in SystemCursors {
             DllCall("SetSystemCursor", "Ptr", DllCall("CopyImage", "Ptr", CursorHandles[CursorName], "UInt", 2, "Int", 0, "Int", 0, "UInt", 0, "Ptr"), "UInt", CursorID)
         }
     } else {  ; Off
+        ; Устанавливаем пустые курсоры
         for CursorName, CursorID in SystemCursors {
-            ; Создаем полностью прозрачный курсор (1x1 пиксель)
-            BlankCursor := DllCall("CreateCursor", "Ptr", 0, "Int", 0, "Int", 0, "Int", 1, "Int", 1, "Ptr", AndMask, "Ptr", XorMask, "Ptr")
-            DllCall("SetSystemCursor", "Ptr", BlankCursor, "UInt", CursorID)
+            DllCall("SetSystemCursor", "Ptr", DllCall("CopyImage", "Ptr", EmptyCursors[CursorName], "UInt", 2, "Int", 0, "Int", 0, "UInt", 0, "Ptr"), "UInt", CursorID)
         }
     }
 }
