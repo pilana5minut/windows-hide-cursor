@@ -1,49 +1,50 @@
-# Скрытие курсора при наборе текста
+# Hiding the Cursor While Typing
 
-Этот репозиторий содержит скрипт на AutoHotkey v2.0, который автоматически скрывает курсор мыши при вводе текста с клавиатуры (буквы a-z, A-Z, цифры 0-9) и возвращает его, когда пользователь начинает двигать мышь.
+This repository contains an AutoHotkey v2.0 script that automatically hides the mouse cursor when typing text (letters a-z, A-Z, digits 0-9) and restores it when the user moves the mouse.
 
-## Назначение
+## Purpose
 
-Скрипт предназначен для пользователей, которые хотят, чтобы курсор мыши не отвлекал во время набора текста. Курсор скрывается, когда вы начинаете печатать, и появляется снова только при движении мыши.
+The script is designed for users who want to avoid distractions from the mouse cursor while typing. The cursor hides when you start typing and reappears only when you move the mouse.
 
-## Требования
+## Requirements
 
-- **AutoHotkey v2.0+**: Скрипт работает только с версией AutoHotkey 2.0 или выше. Скачать AutoHotkey можно с официального сайта: [https://www.autohotkey.com/](https://www.autohotkey.com/).
+- **AutoHotkey v2.0+**: The script works only with AutoHotkey version 2.0 or higher. Download AutoHotkey from the official website: [https://www.autohotkey.com/](https://www.autohotkey.com/).
 
-## Установка и использование
+## Installation and Usage
 
-1. Убедитесь, что AutoHotkey v2.0 установлен на вашем компьютере.
-2. Скачайте файл `hide-cursor-when-typing.ahk` из этого репозитория.
-3. Дважды щелкните по файлу `hide-cursor-when-typing.ahk`, чтобы запустить скрипт.
-4. Скрипт начнет работать автоматически:
-   - Курсор скрывается при нажатии буквенно-цифровых клавиш (a-z, A-Z, 0-9).
-   - Курсор появляется при движении мыши.
-5. Чтобы остановить скрипт, найдите его иконку в системном трее (рядом с часами), щелкните правой кнопкой мыши и выберите "Exit".
+1. Ensure AutoHotkey v2.0 is installed on your computer.
+2. Download the `hide-cursor-when-typing.ahk` file from this repository.
+3. Double-click the `hide-cursor-when-typing.ahk` file to run the script.
+4. The script will start working automatically:
+   - The cursor hides when pressing alphanumeric keys (a-z, A-Z, 0-9).
+   - The cursor reappears when moving the mouse.
+5. To stop the script, locate its icon in the system tray (near the clock), right-click, and select "Exit".
+6. To run the script automatically on system startup, add it to your Windows startup folder or create a shortcut in the Startup directory (`shell:startup`).
 
-## Как работает скрипт
+## How It Works
 
-- **Скрытие курсора**: Когда вы начинаете печатать (буквы или цифры), скрипт заменяет системный курсор на пустой.
-- **Показ курсора**: Курсор возвращается только при движении мыши.
-- **Очистка ресурсов**: При закрытии скрипта системный курсор автоматически восстанавливается.
+- **Hiding the Cursor**: When you start typing (letters or digits), the script replaces the system cursor with an empty one.
+- **Showing the Cursor**: The cursor reappears when the mouse is moved.
+- **Resource Cleanup**: When the script is closed, the system cursor is automatically restored.
 
-## Ограничения
+## Limitations
 
-- Скрипт реагирует только на буквенно-цифровые клавиши (a-z, A-Z, 0-9). Другие клавиши, такие как пробел или знаки препинания, не вызывают скрытие курсора.
-- Работает только на Windows, так как AutoHotkey — это инструмент для Windows.
+- The script responds only to alphanumeric keys (a-z, A-Z, 0-9). Other keys, such as space or punctuation, do not trigger cursor hiding.
+- Works only on Windows, as AutoHotkey is a Windows-specific tool.
 
-## Настройка
+## Customization
 
-Чтобы изменить поведение скрипта, например, добавить поддержку других клавиш, отредактируйте файл `hide-cursor-when-typing.ahk` в текстовом редакторе. Основной параметр для настройки:
-- Массив клавиш в функции `CheckKeyboardActivity`: Можно добавить другие клавиши, например, `Space`, `,` или `.`.
+To modify the script's behavior, such as adding support for other keys, edit the `hide-cursor-when-typing.ahk` file in a text editor. The main parameter to adjust:
+- The array of keys in the `CheckKeyboardActivity` function: You can add other keys, such as `Space`, `,`, or `.`.
 
-## Лицензия
+## License
 
-Этот скрипт распространяется под лицензией MIT. Вы можете свободно использовать, изменять и распространять его.
+This script is distributed under the MIT License. You are free to use, modify, and distribute it.
 
-## Проблемы и вопросы
+## Issues and Questions
 
-Если у вас возникли проблемы или вопросы, создайте [issue](https://github.com/pilana5minut/windows-hide-cursor/issues) в этом репозитории.
+If you encounter problems or have questions, create an [issue](https://github.com/pilana5minut/windows-hide-cursor/issues) in this repository.
 
-## Источники
+## Resources
 
 - [AutoHotkey v2 Documentation](https://www.autohotkey.com/docs/v2/)

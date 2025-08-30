@@ -1,21 +1,21 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 
-; Инициализация системного курсора
+; Initialization of the system cursor
 SystemCursor("Init")
 
-; Переменные для отслеживания состояния
+; Variables for tracking status
 cursorHidden := false
 lastInputTime := A_TickCount
 
-; Устанавливаем таймер для проверки активности клавиатуры
+; Set a timer to check keyboard activity
 SetTimer CheckKeyboardActivity, 100
 
-; Функция для проверки активности клавиатуры
+; Function for checking keyboard activity
 CheckKeyboardActivity() {
     global cursorHidden, lastInputTime
 
-    ; Проверяем, была ли нажата клавиша клавиатуры (a-z, A-Z, 0-9)
+    ; Checking whether a key on the keyboard has been pressed (a-z, A-Z, 0-9)
     isKeyboardInput := false
     for key in ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
                 "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
@@ -26,11 +26,11 @@ CheckKeyboardActivity() {
         }
     }
 
-    ; Проверяем движение мыши
+    ; Checking mouse movement
     static lastMouseX := 0, lastMouseY := 0
     MouseGetPos &mouseX, &mouseY
 
-    ; Если мышь движется, показываем курсор
+    ; If the mouse moves, show the cursor
     if (lastMouseX != mouseX || lastMouseY != mouseY) {
         lastMouseX := mouseX
         lastMouseY := mouseY
@@ -41,12 +41,12 @@ CheckKeyboardActivity() {
         return
     }
 
-    ; Если есть ввод с клавиатуры
+    ; If there is input from the keyboard
     if (isKeyboardInput) {
-        ; Обновляем время последнего ввода
+        ; Updating the time of the last entry
         lastInputTime := A_TickCount
 
-        ; Если курсор еще не скрыт, скрываем его
+        ; If the cursor is not already hidden, hide it.
         if (!cursorHidden) {
             SystemCursor("Off")
             cursorHidden := true
@@ -54,7 +54,7 @@ CheckKeyboardActivity() {
     }
 }
 
-; Функция для управления системным курсором (без изменений)
+; Function for controlling the system cursor (no changes)
 SystemCursor(OnOff := "On") {
     static AndMask, XorMask
     static CursorHandles := Map()
@@ -62,36 +62,36 @@ SystemCursor(OnOff := "On") {
     static SystemCursors := Map("APPSTARTING", 32650, "ARROW", 32512, "CROSS", 32515, "HAND", 32649, "HELP", 32651, "IBEAM", 32513, "NO", 32648, "SIZEALL", 32646, "SIZENESW", 32643, "SIZENS", 32645, "SIZENWSE", 32642, "SIZEWE", 32644, "UPARROW", 32516, "WAIT", 32514)
 
     if (OnOff = "Init") {
-        ; Создаем маски для пустого курсора
-        AndMask := Buffer(32*4, 0xFF)  ; Полностью белая AND маска (все биты = 1)
-        XorMask := Buffer(32*4, 0)     ; Полностью черная XOR маска (все биты = 0)
+        ; Creating masks for an empty cursor
+        AndMask := Buffer(32*4, 0xFF)  ; Completely white AND mask (all bits = 1)
+        XorMask := Buffer(32*4, 0)     ; Completely black XOR mask (all bits = 0)
 
-        ; Сохраняем оригинальные курсоры
+        ; Keep the original cursors
         for CursorName, CursorID in SystemCursors {
             CursorHandle := DllCall("LoadCursor", "Ptr", 0, "Ptr", CursorID, "Ptr")
             CursorHandles[CursorName] := DllCall("CopyImage", "Ptr", CursorHandle, "UInt", 2, "Int", 0, "Int", 0, "UInt", 0, "Ptr")
 
-            ; Создаем пустые курсоры заранее
+            ; Create empty cursors in advance
             EmptyCursors[CursorName] := DllCall("CreateCursor", "Ptr", 0, "Int", 0, "Int", 0, "Int", 32, "Int", 32, "Ptr", AndMask, "Ptr", XorMask, "Ptr")
         }
     } else if (OnOff = "On") {
-        ; Восстанавливаем оригинальные курсоры
+        ; Restoring the original cursors
         for CursorName, CursorID in SystemCursors {
             DllCall("SetSystemCursor", "Ptr", DllCall("CopyImage", "Ptr", CursorHandles[CursorName], "UInt", 2, "Int", 0, "Int", 0, "UInt", 0, "Ptr"), "UInt", CursorID)
         }
     } else {  ; Off
-        ; Устанавливаем пустые курсоры
+        ; Set empty cursors
         for CursorName, CursorID in SystemCursors {
             DllCall("SetSystemCursor", "Ptr", DllCall("CopyImage", "Ptr", EmptyCursors[CursorName], "UInt", 2, "Int", 0, "Int", 0, "UInt", 0, "Ptr"), "UInt", CursorID)
         }
     }
 }
 
-; Функция для очистки ресурсов при выходе (без изменений)
+; Function for cleaning resources on exit (no changes)
 CleanupResources(ExitReason, ExitCode) {
-    ; Восстанавливаем курсор
+    ; Restoring the cursor
     SystemCursor("On")
 }
 
-; Регистрируем функцию очистки ресурсов при выходе
+; Registering a resource cleanup function on exit
 OnExit CleanupResources
