@@ -6,7 +6,6 @@ SystemCursor("Init")
 
 ; Переменные для отслеживания состояния
 cursorHidden := false
-idleThreshold := 1000  ; Время в миллисекундах, после которого курсор будет показан снова
 lastInputTime := A_TickCount
 
 ; Устанавливаем таймер для проверки активности клавиатуры
@@ -14,7 +13,7 @@ SetTimer CheckKeyboardActivity, 100
 
 ; Функция для проверки активности клавиатуры
 CheckKeyboardActivity() {
-    global cursorHidden, lastInputTime, idleThreshold
+    global cursorHidden, lastInputTime
 
     ; Проверяем, была ли нажата клавиша клавиатуры (a-z, A-Z, 0-9)
     isKeyboardInput := false
@@ -52,12 +51,6 @@ CheckKeyboardActivity() {
             SystemCursor("Off")
             cursorHidden := true
         }
-    }
-    ; Если пользователь неактивен и прошло достаточно времени с последнего ввода
-    else if (cursorHidden && (A_TickCount - lastInputTime > idleThreshold)) {
-        ; Показываем курсор
-        SystemCursor("On")
-        cursorHidden := false
     }
 }
 
